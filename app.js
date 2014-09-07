@@ -9,6 +9,8 @@ var mongo = require('mongoskin');
 var db = mongo.db("mongodb://localhost:27017/alarm", {native_parser:true})
 
 var routes = require('./routes/index');
+var devices = require('./routes/devices');
+var users = require('./routes/users');
 
 var app = express();
 
@@ -30,6 +32,8 @@ app.use(function(req,res,next) {
 });
 
 app.use('/', routes);
+app.use('/devices', devices);
+app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
