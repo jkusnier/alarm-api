@@ -15,6 +15,14 @@ router.get('/devices/:device_id', function(req, res) {
   });
 });
 
+router.get('/devices/:device_id/alarms', function(req, res) {
+  var db = req.db;
+  db.collection('devices').findOne({_id: req.params.device_id}, function(err, result) {
+    var alarms = result.alarms;
+    res.json(alarms);
+  });
+});
+
 router.get('/users', function(req, res) {
   var db = req.db;
   db.collection('users').find().toArray(function (err, items) {
