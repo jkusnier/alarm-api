@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/devices', function(req, res) {
-  var db = req.db;  
+  var db = req.db;
   db.collection('devices').find().toArray(function (err, items) {
     res.json(items);
   });
@@ -33,7 +33,7 @@ router.get('/devices/:device_id/alarms/next', function(req, res) {
     // var local = new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() , now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds()) + (timeZone * 3600000));
     var currentTime = (local.getHours() * 60) + (local.getMinutes());
     var currentDay = local.getDay() + 1; // Spark Days Sunday = 1 Saturday = 7
-    
+
     var nextAlarm;
     var alarms = result.alarms;
     // FIXME this is very inefficient and could probably be handled by mongo once I know it better
@@ -57,7 +57,7 @@ router.get('/devices/:device_id/alarms/next', function(req, res) {
         }
         days[i] = day;
       }
-      
+
       // nextAlarm = alarms[0];
       alarms.forEach(function(alarm) {
         if (!nextAlarm) {
@@ -73,7 +73,7 @@ router.get('/devices/:device_id/alarms/next', function(req, res) {
         }
       });
     }
-    
+
     res.json(nextAlarm);
   });
 });
