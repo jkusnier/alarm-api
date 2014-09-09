@@ -65,7 +65,7 @@ router.get('/devices/:device_id/alarms/next', function(req, res) {
           days.forEach(function(day) {
             if (alarm.time < nextAlarm.time && alarm.dayOfWeek.indexOf(day) >= 0 && nextAlarm.dayOfWeek.indexOf(day) >= 0) {
               nextAlarm = alarm;
-              // FIXME stop this loop
+              return false;
             }
           });
         }
