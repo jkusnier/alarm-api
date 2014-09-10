@@ -39,9 +39,7 @@ router.get('/devices/:device_id/alarms/next', function(req, res) {
     // FIXME this is very inefficient and could probably be handled by mongo once I know it better
     alarms.forEach(function(alarm) {
       if (alarm.time > currentTime && alarm.dayOfWeek.indexOf(currentDay) >= 0) { // Check for alarms today
-        if (nextAlarm && alarm.time < nextAlarm.time) { // We want the earliest alarm
-          nextAlarm = alarm;
-        } else if (!nextAlarm) {
+        if ((nextAlarm && alarm.time < nextAlarm.time) || (!nextAlarm && alarm.time > currentTime)) { // We want the earliest alarm
           nextAlarm = alarm;
         }
       }
