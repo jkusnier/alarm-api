@@ -25,6 +25,7 @@ router.get('/devices/:device_id/alarms', function(req, res) {
 
 router.get('/devices/:device_id/alarms/next', function(req, res) {
   var db = req.db;
+  // FIXME query only active alarms
   db.collection('devices').findOne({_id: req.params.device_id}, function(err, result) {
     var timeZone = result.timeZone;
     var now = new Date;
@@ -37,6 +38,7 @@ router.get('/devices/:device_id/alarms/next', function(req, res) {
     var nextAlarm;
     var alarms = result.alarms;
     // FIXME this is very inefficient and could probably be handled by mongo once I know it better
+    // This could be a single query
     alarms.forEach(function(alarm) {
       if (alarm.time > currentTime && alarm.dayOfWeek.indexOf(currentDay) >= 0 && alarm.status == true) { // Check for alarms today
         if ((nextAlarm && alarm.time < nextAlarm.time) || (!nextAlarm && alarm.time > currentTime)) { // We want the earliest alarm
@@ -46,6 +48,7 @@ router.get('/devices/:device_id/alarms/next', function(req, res) {
     });
     // No alarms set. Find next alarm that is closest to today
     if (!nextAlarm) {
+      // FIXME this could be a second query for all active alarms, only used if the previous query did not hit
       // Create array of days starting with tomorrow
       var days = [];
       for (i=0; i<7; i++) {
