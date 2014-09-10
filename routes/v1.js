@@ -38,7 +38,7 @@ router.get('/devices/:device_id/alarms/next', function(req, res) {
     var alarms = result.alarms;
     // FIXME this is very inefficient and could probably be handled by mongo once I know it better
     alarms.forEach(function(alarm) {
-      if (alarm.time > currentTime && alarm.dayOfWeek.indexOf(currentDay) >= 0) { // Check for alarms today
+      if (alarm.time > currentTime && alarm.dayOfWeek.indexOf(currentDay) >= 0 && alarm.status == true) { // Check for alarms today
         if ((nextAlarm && alarm.time < nextAlarm.time) || (!nextAlarm && alarm.time > currentTime)) { // We want the earliest alarm
           nextAlarm = alarm;
         }
@@ -58,16 +58,18 @@ router.get('/devices/:device_id/alarms/next', function(req, res) {
 
       // nextAlarm = alarms[0];
       alarms.forEach(function(alarm) {
-        if (!nextAlarm) {
-          nextAlarm = alarm;
-        } else {
-          // Alarm must be lower time of day or a closer day of week to override
-          days.forEach(function(day) {
-            if (alarm.time < nextAlarm.time && alarm.dayOfWeek.indexOf(day) >= 0 && nextAlarm.dayOfWeek.indexOf(day) >= 0) {
-              nextAlarm = alarm;
-              return false;
-            }
-          });
+        if (alarm.status == true) {
+          if (!nextAlarm) {
+            nextAlarm = alarm;
+          } else {
+            // Alarm must be lower time of day or a closer day of week to override
+            days.forEach(function(day) {
+              if (alarm.time < nextAlarm.time && alarm.dayOfWeek.indexOf(day) >= 0 && nextAlarm.dayOfWeek.indexOf(day) >= 0) {
+                nextAlarm = alarm;
+                return false;
+              }
+            });
+          }
         }
       });
     }
