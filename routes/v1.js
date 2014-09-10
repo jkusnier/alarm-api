@@ -17,9 +17,8 @@ router.get('/devices/:device_id', function(req, res) {
 
 router.get('/devices/:device_id/alarms', function(req, res) {
   var db = req.db;
-  db.collection('devices').findOne({_id: req.params.device_id}, function(err, result) {
-    var alarms = result.alarms;
-    res.json(alarms);
+  db.collection('alarms').find({deviceId: req.params.device_id}).toArray(function (err, items) {
+    res.json(items);
   });
 });
 
