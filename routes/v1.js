@@ -1,6 +1,39 @@
 var express = require('express');
 var router = express.Router();
 
+router.use(function(req,res,next) {
+  var db = req.db;
+  var access_token = req.query.access_token;
+  console.log(access_token);
+
+  if (!access_token) {
+    res.status(400).send({
+      code : 400,
+      error : "invalid_request",
+      error_description : "The access token was not found"
+    });
+  } else {
+    db.collection('users').findOne({accessToken: access_token}, function(err, result) {
+      if(err) {
+        res.status(400).send({
+          code : 400,
+          error : "invalid_request",
+          error_description : err
+        });
+      } else if (result) {
+        req.user = result;
+        next();
+      } else {
+        res.status(400).send({
+          code : 400,
+          error : "invalid_request",
+          error_description : "The access token provided is invalid"
+        });
+      }
+    });
+  }
+});
+
 router.get('/devices', function(req, res) {
   var db = req.db;
   db.collection('devices').find().toArray(function (err, items) {
