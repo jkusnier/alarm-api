@@ -33,6 +33,27 @@ router.use(function(req,res,next) {
   }
 });
 
+router.param('device_id', function(req,res,next,device_id) {
+  if (device_id) {
+    var devices = req.user.devices;
+    var authorizedDevice = false;
+
+    if (devices && devices.indexOf(device_id) >= 0) {
+      authorizedDevice = true;
+    }
+
+    if (!authorizedDevice) {
+      res.status(400).send({
+        code : 400,
+        error : "invalid_request",
+        error_description : "The device is invalid"
+      });
+      return;
+    }
+  }
+  next();
+});
+
 router.get('/devices', function(req, res) {
   var db = req.db;
   db.collection('devices').find().toArray(function (err, items) {
