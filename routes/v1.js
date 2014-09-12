@@ -4,7 +4,6 @@ var router = express.Router();
 router.use(function(req,res,next) {
   var db = req.db;
   var access_token = req.query.access_token;
-  console.log(access_token);
 
   if (!access_token) {
     res.status(400).send({
@@ -34,9 +33,31 @@ router.use(function(req,res,next) {
   }
 });
 
+router.param('device_id', function(req,res,next,device_id) {
+  if (device_id) {
+    var devices = req.user.devices;
+    var authorizedDevice = false;
+
+    if (devices && devices.indexOf(device_id) >= 0) {
+      authorizedDevice = true;
+    }
+
+    if (!authorizedDevice) {
+      res.status(400).send({
+        code : 400,
+        error : "invalid_request",
+        error_description : "The device is invalid"
+      });
+      return;
+    }
+  }
+  next();
+});
+
 router.get('/devices', function(req, res) {
   var db = req.db;
-  db.collection('devices').find().toArray(function (err, items) {
+  var user = req.user;
+  db.collection('devices').find({_id: {$in: user.devices}}).toArray(function (err, items) {
     res.json(items);
   });
 });
