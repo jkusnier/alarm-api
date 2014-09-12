@@ -56,7 +56,8 @@ router.param('device_id', function(req,res,next,device_id) {
 
 router.get('/devices', function(req, res) {
   var db = req.db;
-  db.collection('devices').find().toArray(function (err, items) {
+  var user = req.user;
+  db.collection('devices').find({_id: {$in: user.devices}}).toArray(function (err, items) {
     res.json(items);
   });
 });
