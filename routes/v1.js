@@ -4,7 +4,6 @@ var router = express.Router();
 router.use(function(req,res,next) {
   var db = req.db;
   var access_token = req.query.access_token;
-  console.log(access_token);
 
   if (!access_token) {
     res.status(400).send({
