@@ -15,5 +15,10 @@
     "jade": "~1.5.0",
     "mongodb": "*",
     "mongoskin": "*"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.0.1",
+    "restler": "^3.2.2"
   }
 }
