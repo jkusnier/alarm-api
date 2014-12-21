@@ -3,30 +3,18 @@ var rest = require('restler');
 
 var moment = require('moment');
 
-var mongo = require('mongoskin');
-var db = mongo.db("mongodb://localhost:27017/alarm", {native_parser: true})
-
 describe('API tests', function () {
 
-    var base = 'http://localhost:3000/v1';
-    var user = 'jason';
-    var access_token;
-    var devices;
+    var base = 'http://api.weecode.com/alarm/v1';
+    var user = "jason";
+    var access_token = "5Y2ttXcYgHYUHmOh5RjuQlaDVRwtW68o3vQhMKnEhUbdevaXBBRfIo5gtG9EAnu";
+    var devices = [
+        "55ff6d065075555319240287",
+        "55ff6e065075555339321787",
+        "48ff67065067555029111587",
+        "54ff6d066672524830211267"
+    ];
 
-    it('should have active user with access token', function (done) {
-        db.collection('users').findOne({_id: user}, function (err, result) {
-
-            expect(err).to.not.exist();
-            expect(result).to.exist();
-            access_token = result.accessToken;
-            expect(access_token).to.exist();
-            expect(access_token).to.be.a('string');
-            devices = result.devices;
-
-            done();
-        });
-
-    });
     it('should have a list of devices', function (done) {
         rest.get(base + '/devices?access_token=' + access_token).on('success', function (data) {
             expect(data).to.exist();
