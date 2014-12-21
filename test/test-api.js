@@ -6,12 +6,9 @@ var moment = require('moment');
 describe('API tests', function () {
 
     var base = 'http://api.weecode.com/alarm/v1';
-    var user = "jason";
-    var access_token = "5Y2ttXcYgHYUHmOh5RjuQlaDVRwtW68o3vQhMKnEhUbdevaXBBRfIo5gtG9EAnu";
+    var user = "test";
+    var access_token = "AAAAA5Y2gHYUHmOh5RjuQlaDVRwtW68o3vQhMKnEhUbdevaXBBRfIo5gtG9EAnu";
     var devices = [
-        "55ff6d065075555319240287",
-        "55ff6e065075555339321787",
-        "48ff67065067555029111587",
         "54ff6d066672524830211267"
     ];
 
