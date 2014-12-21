@@ -3,14 +3,15 @@ var rest = require('restler');
 
 var moment = require('moment');
 
+var environment = require('../environment.json').name;
+var properties = require('../properties.json');
+
 describe('API tests', function () {
 
-    var base = 'http://api.weecode.com/alarm/v1';
-    var user = "test";
-    var access_token = "AAAAA5Y2gHYUHmOh5RjuQlaDVRwtW68o3vQhMKnEhUbdevaXBBRfIo5gtG9EAnu";
-    var devices = [
-        "54ff6d066672524830211267"
-    ];
+    var base = properties.environments[environment].base;
+    var user = properties.environments[environment].user;
+    var access_token = properties.environments[environment].access_token;
+    var devices = properties.environments[environment].devices;
 
     it('should have a list of devices', function (done) {
         rest.get(base + '/devices?access_token=' + access_token).on('success', function (data) {
