@@ -23,7 +23,7 @@ router.get('/devices/:dev_id/alarms/next', function(req, res) {
       } else {
         // No alarms set. Find next alarm that is closest to today
         if (!nextAlarm) {
-          db.collection('alarms').find({deviceId: device_id, status: true}).toArray(function(err, items) {
+          db.collection('alarms').find({deviceId: device_id, status: true}, {sort: "time"}).toArray(function(err, items) {
             // Create array of days starting with tomorrow
             var days = [];
             for (i=0; i<7; i++) {
