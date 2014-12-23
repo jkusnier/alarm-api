@@ -141,4 +141,43 @@ describe('API tests', function () {
             done();
         });
     });
+
+    it('should be able to view all alarms', function (done) {
+        var device_id = devices[0];
+        rest.get(base + '/devices/' + device_id + '/alarms?access_token=' + access_token).on('success', function (data) {
+            expect(data).to.be.an('array');
+
+            data.forEach(function (entry) {
+                expect(entry).to.include.keys(['_id', 'deviceId', 'name', 'time', 'dayOfWeek', 'status', 'created', 'modified']);
+
+                expect(entry).to.have.property('_id').to.not.be.empty();
+                expect(entry._id).to.be.a('string');
+
+                expect(entry).to.have.property('deviceId').to.not.be.empty();
+                expect(entry.deviceId).to.be.a('string').and.to.equal(device_id);
+
+                expect(entry).to.have.property('name').to.not.be.empty();
+                expect(entry.name).to.be.a('string');
+
+                expect(entry).to.have.property('time').to.not.be.empty();
+                expect(entry.time).to.be.a('number');
+
+                expect(entry).to.have.property('dayOfWeek').to.not.be.empty();
+                expect(entry.dayOfWeek).to.be.an('array');
+
+                entry.dayOfWeek.forEach(function (entry) {
+                    expect(entry).to.be.a('number');
+                    expect(entry).to.be.within(1,7);
+                });
+
+                expect(entry).to.have.property('status').to.not.be.empty();
+                expect(entry.status).to.be.a('boolean');
+
+                expect(entry).to.have.property('created').to.not.be.empty();
+                expect(moment(data.created).isValid()).to.be.ok();
+            });
+
+            done();
+        });
+    });
 });
