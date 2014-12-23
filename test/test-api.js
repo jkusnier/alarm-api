@@ -110,4 +110,35 @@ describe('API tests', function () {
             done();
         });
     });
+
+    it('should be able to view device information', function (done) {
+        var device_id = devices[0];
+        rest.get(base + '/devices/' + device_id + '?access_token=' + access_token).on('success', function (data) {
+            expect(data).to.be.an('object');
+
+            expect(data).to.include.keys(['_id', 'accessToken', 'name', 'zip', 'timeZone', 'owner', 'created', 'modified']);
+
+            expect(data).to.have.property('_id').to.not.be.empty();
+            expect(data._id).to.be.a('string').and.to.equal(device_id);
+
+            expect(data).to.have.property('accessToken').to.not.be.empty();
+            expect(data.accessToken).to.be.a('string');
+
+            expect(data).to.have.property('name').to.not.be.empty();
+            expect(data.name).to.be.a('string');
+
+            expect(data).to.have.property('zip').to.not.be.empty();
+
+            expect(data).to.have.property('timeZone').to.not.be.empty();
+
+            expect(data).to.have.property('owner').to.not.be.empty();
+            expect(data.owner).to.be.a('string').and.to.equal(user);
+
+            expect(data).to.have.property('created').to.not.be.empty();
+            // Must be a parsable date
+            expect(moment(data.created).isValid()).to.be.ok();
+
+            done();
+        });
+    });
 });
