@@ -58,7 +58,16 @@ router.get('/devices/:dev_id/alarms/next', function(req, res) {
 router.post('/users', function(req, res) {
   var db = req.db;
   db.collection('users').findOne({_id: req.body.user_id, passwd: req.body.password}, function(err, result) {
-    res.json(result);
+    if (result) {
+      res.json(result);
+    } else {
+      res.status(401).send({
+        code : 401,
+        error : "Unauthorized",
+        error_description : "The credentials are invalid"
+      });
+    }
+
   });
 });
 
@@ -67,26 +76,26 @@ router.use(function(req,res,next) {
   var access_token = req.query.access_token;
 
   if (!access_token) {
-    res.status(400).send({
-      code : 400,
-      error : "invalid_request",
+    res.status(401).send({
+      code : 401,
+      error : "Unauthorized",
       error_description : "The access token was not found"
     });
   } else {
     db.collection('users').findOne({accessToken: access_token}, function(err, result) {
       if(err) {
-        res.status(400).send({
-          code : 400,
-          error : "invalid_request",
+        res.status(401).send({
+          code : 401,
+          error : "Unauthorized",
           error_description : err
         });
       } else if (result) {
         req.user = result;
         next();
       } else {
-        res.status(400).send({
-          code : 400,
-          error : "invalid_request",
+        res.status(401).send({
+          code : 401,
+          error : "Unauthorized",
           error_description : "The access token provided is invalid"
         });
       }
@@ -104,9 +113,9 @@ router.param('device_id', function(req,res,next,device_id) {
     }
 
     if (!authorizedDevice) {
-      res.status(400).send({
-        code : 400,
-        error : "invalid_request",
+      res.status(401).send({
+        code : 401,
+        error : "Unauthorized",
         error_description : "The device is invalid"
       });
       return;
