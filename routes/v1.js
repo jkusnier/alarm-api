@@ -1,5 +1,8 @@
 var express = require('express');
+var bodyParser = require("body-parser");
 var router = express.Router();
+
+router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/devices/:dev_id/alarms/next', function(req, res) {
   var db = req.db;
@@ -49,6 +52,13 @@ router.get('/devices/:dev_id/alarms/next', function(req, res) {
         }
       }
     });
+  });
+});
+
+router.post('/users', function(req, res) {
+  var db = req.db;
+  db.collection('users').findOne({_id: req.body.user_id, passwd: req.body.password}, function(err, result) {
+    res.json(result);
   });
 });
 
@@ -129,14 +139,7 @@ router.get('/devices/:device_id/alarms', function(req, res) {
 
 router.get('/users', function(req, res) {
   var db = req.db;
-  db.collection('users').find().toArray(function (err, items) {
-    res.json(items);
-  });
-});
-
-router.get('/users/:user_id', function(req, res) {
-  var db = req.db;
-  db.collection('users').findOne({_id: req.params.user_id}, function(err, result) {
+  db.collection('users').findOne({accessToken: req.param('access_token')}, function(err, result) {
     res.json(result);
   });
 });
