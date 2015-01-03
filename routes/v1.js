@@ -146,6 +146,14 @@ router.get('/devices/:device_id/alarms', function(req, res) {
   });
 });
 
+router.get('/devices/:device_id/alarms/:alarm_id', function (req, res) {
+  var db = req.db;
+  var mongo = req.mongo;
+  db.collection('alarms').findOne({deviceId: req.params.device_id, _id: mongo.helper.toObjectID(req.params.alarm_id)}, function(err, result) {
+    res.json(result);
+  });
+});
+
 router.get('/users', function(req, res) {
   var db = req.db;
   db.collection('users').findOne({accessToken: req.param('access_token')}, function(err, result) {
