@@ -154,6 +154,42 @@ router.get('/devices/:device_id/alarms/:alarm_id', function (req, res) {
   });
 });
 
+router.post('/devices/:device_id/alarms/:alarm_id', function (req, res) {
+  var db = req.db;
+  var mongo = req.mongo;
+
+  var deviceId = req.params.device_id;
+  var alarmId = mongo.helper.toObjectID(req.params.alarm_id);
+  var status = req.body.status;
+
+  var updateValues = {};
+
+  if (typeof  status !== 'undefined') {
+    updateValues.status = status;
+  }
+
+  db.collection('alarms').update({
+    deviceId: deviceId,
+    _id: alarmId
+  }, {$set: updateValues}, function (err, result) {
+    if (err) {
+      res.status(500).send({
+        code : 500,
+        error : "Database Error",
+        error_description : err
+      });
+    } else if (result == 1) {
+      res.status(200).send();
+    } else {
+      res.status(400).send({
+        code : 400,
+        error : "Bad Request",
+        error_description : "Alarm Not Found"
+      });
+    }
+  });
+});
+
 router.get('/users', function(req, res) {
   var db = req.db;
   db.collection('users').findOne({accessToken: req.param('access_token')}, function(err, result) {
