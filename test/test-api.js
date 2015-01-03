@@ -167,11 +167,12 @@ describe('API tests', function () {
 
                 entry.dayOfWeek.forEach(function (entry) {
                     expect(entry).to.be.a('number');
-                    expect(entry).to.be.within(1,7);
+                    expect(entry).to.be.within(1, 7);
                 });
 
-                expect(entry).to.have.property('status').to.not.be.empty();
-                expect(entry.status).to.be.a('boolean');
+                //expect(entry).to.have.property('status').to.not.be.empty();
+                var alarm_status = (entry.status == "true");
+                expect(alarm_status).to.be.a('boolean');
 
                 expect(entry).to.have.property('created').to.not.be.empty();
                 expect(moment(data.created).isValid()).to.be.ok();
