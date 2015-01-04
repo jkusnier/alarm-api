@@ -10,6 +10,7 @@ describe('API tests', function () {
 
     var base = properties.environments[environment].base;
     var user = properties.environments[environment].user;
+    var passwd = properties.environments[environment].passwd;
     var access_token = properties.environments[environment].access_token;
     var devices = properties.environments[environment].devices;
 
@@ -178,6 +179,75 @@ describe('API tests', function () {
                 expect(moment(data.created).isValid()).to.be.ok();
             });
 
+            done();
+        });
+    });
+
+    it('should be able to auth via the token', function (done) {
+        rest.get(base + '/users?access_token=' + access_token).on('success', function (data) {
+            expect(data).to.be.an('object');
+
+            expect(data).to.include.keys(['_id', 'passwd', 'accessToken', 'created', 'modified', 'expires', 'lastLogin', 'devices']);
+
+            expect(data).to.have.property('_id').to.not.be.empty();
+            expect(data._id).to.be.a('string');
+
+            expect(data).to.have.property('passwd').to.not.be.empty();
+            expect(data.passwd).to.be.a('string');
+
+            expect(data).to.have.property('accessToken').to.not.be.empty();
+            expect(data.accessToken).to.be.a('string');
+
+            expect(data).to.have.property('created').to.not.be.empty();
+            expect(moment(data.created).isValid()).to.be.ok();
+
+            expect(data).to.have.property('devices').to.not.be.empty();
+            expect(data.devices).to.be.an('array');
+
+            done();
+        });
+    });
+
+    it('should not be able to auth with a bad token', function (done) {
+        rest.get(base + '/users?access_token=BAD_DATA' + access_token).on('complete', function (data, response) {
+            expect(response.statusCode).to.not.equal(200);
+            done();
+        });
+    });
+
+    it('should be able to auth via user and passwd', function (done) {
+        rest.post(base + '/users', { data: {
+            user_id: user,
+            password: passwd
+        }}).on('success', function (data) {
+            expect(data).to.be.an('object');
+
+            expect(data).to.include.keys(['_id', 'passwd', 'accessToken', 'created', 'modified', 'expires', 'lastLogin', 'devices']);
+
+            expect(data).to.have.property('_id').to.not.be.empty();
+            expect(data._id).to.be.a('string');
+
+            expect(data).to.have.property('passwd').to.not.be.empty();
+            expect(data.passwd).to.be.a('string');
+
+            expect(data).to.have.property('accessToken').to.not.be.empty();
+            expect(data.accessToken).to.be.a('string');
+
+            expect(data).to.have.property('created').to.not.be.empty();
+            expect(moment(data.created).isValid()).to.be.ok();
+
+            expect(data).to.have.property('devices').to.not.be.empty();
+            expect(data.devices).to.be.an('array');
+
+            done();
+        });
+    });
+
+    it('should not auth with a bad password', function (done) {
+        rest.post(base + '/users', {data: {
+            user_id: user
+        }}).on('complete', function(data, response){
+            expect(response.statusCode).to.not.equal(200);
             done();
         });
     });
