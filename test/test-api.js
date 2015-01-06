@@ -183,6 +183,58 @@ describe('API tests', function () {
         });
     });
 
+    it('should be able to disable and enable an alarm', function (done) {
+        var device_id = devices[0];
+        rest.get(base + '/devices/' + device_id + '/alarms?access_token=' + access_token).on('success', function (data) {
+            expect(data).to.be.an('array');
+
+            var alarm_id = data[0]["_id"];
+            expect(alarm_id).to.not.be.empty();
+
+            rest.get(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token).on('success', function (data) {
+                expect(data).to.be.an('object');
+                expect(data["_id"]).to.equal(alarm_id);
+
+                var alarm_status1 = (data["status"] == "true")
+                //expect(alarm_status1).to.not.be.empty();
+
+                // Toggle alarm
+                rest.post(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token, {data: {
+                    status: !alarm_status1
+                }}).on('complete', function(data, response) {
+                    expect(response.statusCode).to.equal(200);
+
+                    // Check alarm
+                    rest.get(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token).on('success', function (data) {
+                        expect(data).to.be.an('object');
+                        expect(data["_id"]).to.equal(alarm_id);
+
+                        var alarm_status = (data["status"] == "true"); // Convert to boolean
+                        expect(alarm_status).to.equal(!alarm_status1); // Should be the opposite of our original value
+
+                        // Toggle back
+                        rest.post(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token, {data: {
+                            status: alarm_status1
+                        }}).on('complete', function(data, response) {
+                            expect(response.statusCode).to.equal(200);
+
+                            // Check alarm
+                            rest.get(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token).on('success', function (data) {
+                                expect(data).to.be.an('object');
+                                expect(data["_id"]).to.equal(alarm_id);
+
+                                var alarm_status = (data["status"] == "true"); // Convert to boolean
+                                expect(alarm_status).to.equal(alarm_status1); // Should be our original value now
+                            });
+                        });
+                    });
+                });
+
+                done();
+            });
+        });
+    });
+
     it('should be able to auth via the token', function (done) {
         rest.get(base + '/users?access_token=' + access_token).on('success', function (data) {
             expect(data).to.be.an('object');
