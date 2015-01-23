@@ -161,11 +161,24 @@ router.post('/devices/:device_id/alarms/:alarm_id', function (req, res) {
   var deviceId = req.params.device_id;
   var alarmId = mongo.helper.toObjectID(req.params.alarm_id);
   var status = req.body.status;
+  var name = req.body.name;
+  var time = req.body.time;
+  var dayOfWeek = req.body.dayOfWeek;
 
   var updateValues = {};
 
+  // TODO add validation and type safety
   if (typeof  status !== 'undefined') {
     updateValues.status = status;
+  }
+  if (typeof name !== 'undefined') {
+    updateValues.name = name;
+  }
+  if (typeof  time !== 'undefined') {
+    updateValues.time = time;
+  }
+  if (typeof dayOfWeek != 'undefined') {
+    updateValues.dayOfWeek = dayOfWeek;
   }
 
   db.collection('alarms').update({
