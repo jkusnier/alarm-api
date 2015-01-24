@@ -235,6 +235,17 @@ describe('API tests', function () {
         });
     });
 
+    function randomString() {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 5; i++ ) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+
+        return text;
+    }
+
     it('should be able to auth via the token', function (done) {
         rest.get(base + '/users?access_token=' + access_token).on('success', function (data) {
             expect(data).to.be.an('object');
