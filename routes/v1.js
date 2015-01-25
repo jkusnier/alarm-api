@@ -175,7 +175,7 @@ router.post('/devices/:device_id/alarms/:alarm_id', function (req, res) {
     updateValues.name = name;
   }
   if (typeof  time !== 'undefined') {
-    updateValues.time = time;
+    updateValues.time = parseInt(time);
   }
   if (typeof dayOfWeek != 'undefined') {
     updateValues.dayOfWeek = dayOfWeek;
