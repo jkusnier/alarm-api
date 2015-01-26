@@ -352,6 +352,60 @@ describe('API tests', function () {
         });
     });
 
+    it('should be able to update the alarm days', function (done) {
+        var device_id = devices[0];
+        rest.get(base + '/devices/' + device_id + '/alarms?access_token=' + access_token).on('success', function (data) {
+            expect(data).to.be.an('array');
+
+            var alarm_id = data[0]["_id"];
+            expect(alarm_id).to.not.be.empty();
+
+            rest.get(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token).on('success', function (data) {
+                expect(data).to.be.an('object');
+                expect(data["_id"]).to.equal(alarm_id);
+
+                var alarm_days1 = data["dayOfWeek"];
+                var alarm_days2 = [1,2,3,4,5,6,7];
+                //expect(alarm_status1).to.not.be.empty();
+
+                // Toggle alarm
+                var body1 = {dayOfWeek: alarm_days2};
+                rest.postJson(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token, {
+                    dayOfWeek: alarm_days2
+                }).on('complete', function(data, response) {
+                    expect(response.statusCode).to.equal(200);
+
+                    // Check alarm
+                    rest.get(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token).on('success', function (data) {
+                        expect(data).to.be.an('object');
+                        expect(data["_id"]).to.equal(alarm_id);
+
+                        var alarm_days = data["dayOfWeek"];
+                        expect(alarm_days).to.eql(alarm_days2);
+
+                        // Toggle back
+                        rest.postJson(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token, {
+                            dayOfWeek: alarm_days1
+                        }).on('complete', function(data, response) {
+                            expect(response.statusCode).to.equal(200);
+
+                            // Check alarm
+                            rest.get(base + '/devices/' + device_id + '/alarms/' + alarm_id + '?access_token=' + access_token).on('success', function (data) {
+                                expect(data).to.be.an('object');
+                                expect(data["_id"]).to.equal(alarm_id);
+
+                                var alarm_days = data["dayOfWeek"];
+                                expect(alarm_days).to.eql(alarm_days1); // Should be our original value now
+                            });
+                        });
+                    });
+                });
+
+                done();
+            });
+        });
+    });
+
     it('should be able to auth via the token', function (done) {
         rest.get(base + '/users?access_token=' + access_token).on('success', function (data) {
             expect(data).to.be.an('object');
