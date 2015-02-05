@@ -203,6 +203,13 @@ router.post('/devices/:device_id/alarms/:alarm_id', function (req, res) {
   });
 });
 
+router.put('/devices/:device_id/alarm', function (req, res) {
+    var db = req.db;
+    var mongo = req.mongo;
+
+    res.status(501).send();
+}
+
 router.get('/users', function(req, res) {
   var db = req.db;
   db.collection('users').findOne({accessToken: req.param('access_token')}, function(err, result) {
