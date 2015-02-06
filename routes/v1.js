@@ -207,7 +207,34 @@ router.put('/devices/:device_id/alarm', function (req, res) {
     var db = req.db;
     var mongo = req.mongo;
 
-    res.status(501).send();
+    var deviceId = req.params.device_id;
+    var status = req.body.status;
+    var name = req.body.name;
+    var time = req.body.time;
+    var dayOfWeek = req.body.dayOfWeek;
+
+    var errorResponse = {};
+
+    // TODO add validation and type safety
+    if (typeof  status === 'undefined') {
+        errorResponse.status = 'status is required';
+    }
+    if (typeof name === 'undefined') {
+        errorResponse.name = 'name is required';
+    }
+    if (typeof  time === 'undefined') {
+        errorResponse.time = 'time is required';
+    }
+    if (typeof dayOfWeek === 'undefined') {
+        errorResponse.dayOfWeek = 'dayOfWeek is required';
+    }
+
+    if (errorResponse !== {}) {
+        res.status(400).send(errorResponse);
+    } else {
+
+        res.status(501).send();
+    }
 });
 
 router.get('/users', function(req, res) {
