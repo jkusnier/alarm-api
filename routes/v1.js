@@ -225,6 +225,10 @@ router.put('/devices/:device_id/alarm', function (req, res) {
     }
     if (typeof  time === 'undefined') {
         errorResponse.time = 'time is required';
+    } else if (time !== parseInt(time)) {
+        errorResponse.time = 'time must be an integer';
+    } else if (time < 1 || time > 1440) {
+        errorResponse.time = 'time must be between 1 and 1440';
     }
     if (typeof dayOfWeek === 'undefined') {
         errorResponse.dayOfWeek = 'dayOfWeek is required';
