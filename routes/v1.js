@@ -232,6 +232,24 @@ router.put('/devices/:device_id/alarm', function (req, res) {
     }
     if (typeof dayOfWeek === 'undefined') {
         errorResponse.dayOfWeek = 'dayOfWeek is required';
+    } else if (!util.isArray(dayOfWeek)) {
+        errorResponse.dayOfWeek = 'dayOfWeek must be an array';
+    } else if (dayOfWeek.length < 1 || dayOfWeek.length > 7) {
+        errorResponse.dayOfWeek = 'dayOfWeek must only contain 1 - 7 entries';
+    }
+    if (typeof errorResponse.dayOfWeek === 'undefined') {
+        for (var d in dayOfWeek) {
+            if (dayOfWeek[d] !== parseInt(dayOfWeek[d])) {
+                errorResponse.dayOfWeek = 'dayOfWeek must only contain integers';
+                break;
+            } else if (dayOfWeek[d] < 1 || dayOfWeek[d] > 7) {
+                errorResponse.dayOfWeek = 'dayOfWeek must only contain values between 1 and 7';
+                break;
+            } else if (dayOfWeek.indexOf(dayOfWeek[d]) !== dayOfWeek.lastIndexOf(dayOfWeek[d])) {
+                errorResponse.dayOfWeek = 'dayOfWeek must only contain unique values';
+                break;
+            }
+        }
     }
 
     if (errorResponse !== {}) {
