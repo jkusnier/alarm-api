@@ -217,6 +217,8 @@ router.put('/devices/:device_id/alarm', function (req, res) {
 
     if (typeof status === 'undefined') {
         errorResponse.status = 'status is required';
+    } else if (typeof status !== "boolean") {
+        errorResponse.status = 'status must be a boolean';
     }
     if (typeof name === 'undefined') {
         errorResponse.name = 'name is required';
