@@ -215,8 +215,7 @@ router.put('/devices/:device_id/alarm', function (req, res) {
 
     var errorResponse = {};
 
-    // TODO add validation and type safety
-    if (typeof  status === 'undefined') {
+    if (typeof status === 'undefined') {
         errorResponse.status = 'status is required';
     }
     if (typeof name === 'undefined') {
