@@ -2,6 +2,8 @@ var express = require('express');
 var bodyParser = require("body-parser");
 var router = express.Router();
 
+var util = require('util');
+
 router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/devices/:dev_id/alarms/next', function(req, res) {
