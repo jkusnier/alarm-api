@@ -269,4 +269,12 @@ router.get('/users', function(req, res) {
   });
 });
 
+function hasErrors(o) {
+    for(var i in o)
+        if(o.hasOwnProperty(i))
+            return true;
+
+    return false;
+}
+
 module.exports = router;
