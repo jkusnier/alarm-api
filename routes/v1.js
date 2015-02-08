@@ -254,11 +254,24 @@ router.put('/devices/:device_id/alarm', function (req, res) {
         }
     }
 
-    if (errorResponse !== {}) {
+    if (hasErrors(errorResponse)) {
         res.status(400).send(errorResponse);
     } else {
+        var insertValues = {
+            'deviceId': deviceId,
+            'status': status,
+            'name': name,
+            'time': parseInt(time),
+            'dayOfWeek': dayOfWeek
+        };
 
-        res.status(501).send();
+        db.collection('alarms').insert(insertValues, function(err, result) {
+            if (err) {
+                res.status(500).send();
+            } else {
+                res.status(201).send();
+            }
+        });
     }
 });
 
