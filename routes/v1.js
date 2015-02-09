@@ -207,7 +207,6 @@ router.post('/devices/:device_id/alarms/:alarm_id', function (req, res) {
 
 router.put('/devices/:device_id/alarm', function (req, res) {
     var db = req.db;
-    var mongo = req.mongo;
 
     var deviceId = req.params.device_id;
     var status = req.body.status;
