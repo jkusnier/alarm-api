@@ -274,6 +274,10 @@ router.put('/devices/:device_id/alarm', function (req, res) {
     }
 });
 
+router.delete('/devices/:device_id/alarms/:alarm_id', function (req, res) {
+    res.status(501).send();
+});
+
 router.get('/users', function(req, res) {
   var db = req.db;
   db.collection('users').findOne({accessToken: req.param('access_token')}, function(err, result) {
