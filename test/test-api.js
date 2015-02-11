@@ -406,6 +406,10 @@ describe('API tests', function () {
         });
     });
 
+    it('should be able to insert a new alarm', function (done) {
+        done();
+    });
+
     it('should be able to auth via the token', function (done) {
         rest.get(base + '/users?access_token=' + access_token).on('success', function (data) {
             expect(data).to.be.an('object');
