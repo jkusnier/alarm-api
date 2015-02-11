@@ -275,7 +275,32 @@ router.put('/devices/:device_id/alarm', function (req, res) {
 });
 
 router.delete('/devices/:device_id/alarms/:alarm_id', function (req, res) {
-    res.status(501).send();
+    var db = req.db;
+    var mongo = req.mongo;
+
+    var deviceId = req.params.device_id;
+    var alarmId = mongo.helper.toObjectID(req.params.alarm_id);
+
+    db.collection('alarms').remove({
+        deviceId: deviceId,
+        _id: alarmId
+    }, function (err, result) {
+        if (err) {
+            res.status(500).send({
+                code: 500,
+                error: "Database Error",
+                error_description: err
+            });
+        } else if (result == 1) {
+            res.status(204).send();
+        } else {
+            res.status(400).send({
+                code: 400,
+                error: "Bad Request",
+                error_description: "Alarm Not Found"
+            });
+        }
+    });
 });
 
 router.get('/users', function(req, res) {
